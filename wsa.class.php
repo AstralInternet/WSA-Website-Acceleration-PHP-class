@@ -14,9 +14,9 @@
  *                  support@astralinternet.com
  * @license         https://www.gnu.org/licenses/gpl-3.0.html GNU General 
  *                  Public License, version 3 or higher
- * @link            https://www.astralinternet.com/en Astral Internet inc.
+ * @link            https://github.com/AstralInternet/WSA-Website-Acceleration-PHP-class
  * 
- * WSA : The Website Accelerator by Astral Internet is a tool that allows you 
+ * WSA-Cachepurge : The Website Accelerator by Astral Internet is a tool that allows you 
  * to place certain elements of a site in buffer memory (cache) inside the 
  * server. Once the elements are placed buffer of the server, they can be 
  * served much faster to people viewing a website.
@@ -44,11 +44,13 @@
  *                that belong to the user, otherwise the class will try to 
  *                empty the cache for the domain in use only.
  * 
- *  $p_fullPath  : Allow you to override the default ".wsa" folder. If for some
- *                reason the class cannot find the path, it can be manually 
- *                specified.
+ *   $p_fullPath  : Allow you to override the default ".wsa" folder. If for som
+ *                 reason the class cannot find the path, it can be manually 
+ *                 specified.
  *
  */
+
+namespace WSAHandler;
 
 class WSA
 {
@@ -197,7 +199,7 @@ class WSA
          * Check if the module Powered-By string is present in the file header.
          * No need for '===' since the Powered-By will never by at position 0.
          */
-        if (strpos($pageHeader, 'Nginx for cPanel/WHM by AstralInternet')) {
+        if (strpos($pageHeader, 'Nginx for WHM/cPanel by Astral Internet')) {
             $moduleActivated = true;
         }
 
@@ -277,7 +279,7 @@ class WSA
          * underscore ([a-zA-Z0-9_]).
          */
         preg_match(
-            '/\/([a-zA-Z0-9_]{1,})\/([a-zA-Z09_]{1,})\//',
+            '/\/([a-zA-Z0-9_]{1,})\/([a-zA-Z0-9_]{1,})\//',
             __DIR__,
             $splittedFolders
         );
