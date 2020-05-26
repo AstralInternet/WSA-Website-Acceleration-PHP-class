@@ -18,13 +18,13 @@ The class can easilly be intergrated into any project, simply included the class
 include "wsa.class.php";
 
 // Purge the cache for the current domain.
-if (WSA::is_module_installed()) {
-    WSA:purge_cache();
+if (WSAHandler\WSA::is_module_installed()) {
+    WSAHandler\WSA::purge_cache();
 }
 
 // Purge the cache for all the user domains.
-if (WSA::is_module_installed()) {
-    WSA:purge_cache(true);
+if (WSAHandler\WSA::is_module_installed()) {
+    WSAHandler\WSA::purge_cache(true);
 }
 ```
 ### Functions
