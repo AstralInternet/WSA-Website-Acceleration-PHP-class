@@ -2,6 +2,8 @@
 
 A PHP class to easilly manage the different aspect of dealing with the WSA caching engine.
 
+_Note: Since the WSA update to 1.1.X, the administrator may hide the WSA caching header in the HTML page. Therefore, the function to verify is WSA is installed will now return an integer instead of a Boolean. A value of 0 for the module not being installed will be return and help keep backward compatibility. Added value of 1, 2 or 3 will be return depending on the information found in the page header. See the function detail for more information._
+
 ## Getting Started
 
 This class can be freely integrated into any PHP project. A Wordpress plugin currently exist for purging the WSA cache and uses this class in it's backend.
@@ -32,8 +34,11 @@ if (WSAHandler\WSA::is_module_installed()) {
 #### is_module_installed
 
 Function that will try to determine if the WSA module is currently installed inside the server. 
-
-If the function can detect the module, it will return true.
+It will return one of the following choices :
+0 - not installed
+1 - installed
+2 - could be installed (needed since WSA 1.1)
+3 - could be installed, behind CloudFlare proxy (needed since WSA 1.1)
 
 #### purge_cache
 
