@@ -1,51 +1,53 @@
 <?php
 
-/** 
- *  __      _____   _  
- *  \ \    / / __| /_\  
- *   \ \/\/ /\__ \/ _ \ 
+/**
+ *  __      _____   _
+ *  \ \    / / __| /_\
+ *   \ \/\/ /\__ \/ _ \
  *    \_/\_/ |___/_/ \_\
- * 
+ *
  * Astral Internet - Website Acceleration class
- * 
+ *
  * @author          Astral Internet inc. <support@astralinternet.com>
- * @version         1.0.1
- * @copyright       2019 Copyright (C) 2019, Astral Internet inc. - 
+ * @version         1.1.0
+ * @copyright       2021 Copyright (C) 2021, Astral Internet inc. -
  *                  support@astralinternet.com
- * @license         https://www.gnu.org/licenses/gpl-3.0.html GNU General 
+ * @license         https://www.gnu.org/licenses/gpl-3.0.html GNU General
  *                  Public License, version 3 or higher
  * @link            https://github.com/AstralInternet/WSA-Website-Acceleration-PHP-class
- * 
- * WSA-Cachepurge : The Website Accelerator by Astral Internet is a tool that allows you 
- * to place certain elements of a site in buffer memory (cache) inside the 
- * server. Once the elements are placed buffer of the server, they can be 
+ *
+ * WSA-Cachepurge : The Website Accelerator by Astral Internet is a tool that allows you
+ * to place certain elements of a site in buffer memory (cache) inside the
+ * server. Once the elements are placed buffer of the server, they can be
  * served much faster to people viewing a website.
- * 
- * This class will make it easier for anyone wanting to integrate the wsa 
+ *
+ * This class will make it easier for anyone wanting to integrate the wsa
  * functionality directly into their website.
- * 
+ *
  * ############################################################################
  * #                                 Usage                                    #
  * ############################################################################
- * 
+ *
  * WSA::is_module_installed
- *  : Function that will try to determine if the WSA module is currently 
- *  : installed inside the server. If the function can detect the module, it 
+ *  : Function that will try to determine if the WSA module is currently
+ *  : installed inside the server. If the function can detect the module, it
  *  : will return true.
- * 
- * 
- * 
+ *
+ *  $p_extendedValidation : Default to false, When true, the module will look 
+ *                          further than simple checking a page header 
+ *                          response.
+ *
  * WSA:purge_cache (bool $p_purgeAll = false, string $p_fullPath = null)
  *  : Function that will write the file being check by the WSA deamon in order
  *  : to initiate the cache purging procedure in the server. The function will
- *  : return true if it manage to write the file. 
- * 
- *  $p_purgeAll : Set to true if you want to empty the cache for all domains 
- *                that belong to the user, otherwise the class will try to 
+ *  : return true if it manage to write the file.
+ *
+ *  $p_purgeAll : Set to true if you want to empty the cache for all domains
+ *                that belong to the user, otherwise the class will try to
  *                empty the cache for the domain in use only.
- * 
- *   $p_fullPath  : Allow you to override the default ".wsa" folder. If for som
- *                 reason the class cannot find the path, it can be manually 
+ *
+ *  $p_fullPath  : Allow you to override the default ".wsa" folder. If for som
+ *                 reason the class cannot find the path, it can be manually
  *                 specified.
  *
  */
@@ -57,36 +59,35 @@ class WSA
 
     /**
      * Define the directory name used by the WSA caching module
-     * 
+     *
      * @since 1.0.0
      */
-    const  WSA_CACHE_PATH = '.wsa';
+    const WSA_CACHE_PATH = '.wsa';
 
     /**
-     * Maximum of time the script can move up the absolute path in order to 
+     * Maximum of time the script can move up the absolute path in order to
      * find the cache path.
-     * 
+     *
      * @since 1.0.0
      */
-    const  WSA_MAX_BACKTRACE = 5;
-
+    const WSA_MAX_BACKTRACE = 5;
 
     /**
      * The cache purge will be triggered automatically when the empty.me file
-     * is found in “.wsa” folder. If the file contains a domain name that 
+     * is found in “.wsa” folder. If the file contains a domain name that
      * belongs to the cPanel user, then only the cache of that domain will be
      * purged.
-     *  
-     * This method will write the file in the appropriate folder. One can 
-     * manually provide the folder path if for some reason the script doesn’t
-     * manage to find it itself. 
      *
-     * @param sting  Full path where the .wsa folder is.
-     * @param bool   Set to true to empty all the user cache, otherwise will 
-     *               empty only the crrent domain cache.
-     * 
+     * This method will write the file in the appropriate folder. One can
+     * manually provide the folder path if for some reason the script doesn’t
+     * manage to find it itself.
+     *
+     * @param string  Full path where the .wsa folder is.
+     * @param bool    Set to true to empty all the user cache, otherwise will
+     *                empty only the crrent domain cache.
+     *
      * @return bool  True if the file was properly created
-     * 
+     *
      * @since 1.0.0
      */
     public static function purge_cache($p_purgeAll = false, $p_fullPath = null)
@@ -103,7 +104,7 @@ class WSA
 
             // Set the valid flag if the file path is good.
             if (is_writable($absPath)) {
-                $pathFound  = true;
+                $pathFound = true;
             }
         }
 
@@ -113,7 +114,7 @@ class WSA
             // Run the path discovery function
             $absPath = self::find_absolute_path_by_dir();
 
-            // Set the valid flag if the file path was found 
+            // Set the valid flag if the file path was found
             if ($absPath != '') {
                 // create folder if not exist
                 if (!is_dir($absPath)) {
@@ -160,7 +161,7 @@ class WSA
             if ($pathFound) {
 
                 /**
-                 * Change the return trigger to false if the file writing 
+                 * Change the return trigger to false if the file writing
                  * failed for some reason.
                  */
                 if (!file_put_contents($absPath, $domainName)) {
@@ -173,7 +174,6 @@ class WSA
         return $pathFound;
     }
 
-
     /**
      * Function that will try to determine if the WSA module is currently
      * installed inside the server. If the function can detect the module, it
@@ -182,17 +182,25 @@ class WSA
      * 1 - installed
      * 2 - could be installed (needed since WSA 1.1)
      * 3 - could be installed, behind CloudFlare proxy (needed since WSA 1.1)
+     *
+     * @param bool Default to false, When true, the module will look further 
+     *             than simple checking a page header response.
      * 
      * @return int
-     * 
+     *
      * @since 1.0.0
-     * @version 1.0.1
+     * @version 1.1.0
      */
-    public static function is_module_installed()
+    public static function is_module_installed($p_extendedValidation = false)
     {
 
         // Define the default return value
         $moduleActivated = 0;
+
+        // Return the extended validation result and exit.
+        if ($p_extendedValidation) {
+            return self::is_module_installed__extended_validation();
+        }
 
         // Start by getting the current domain name
         $siteURL = self::fetch_current_domain();
@@ -206,7 +214,7 @@ class WSA
          */
         if (strpos($pageHeader, 'Nginx for WHM/cPanel by Astral Internet')) {
             $moduleActivated = 1;
-        } else if(strpos($pageHeader, 'nginx')) {
+        } else if (strpos($pageHeader, 'nginx')) {
             $moduleActivated = 2;
         } else if (strpos($pageHeader, 'cloudflare')) {
             $moduleActivated = 3;
@@ -216,14 +224,39 @@ class WSA
         return $moduleActivated;
     }
 
+    /**
+     * Function that check if WSA interact with the clear file.
+     * If it's not the case, the module is not active.
+     *
+     * @return int 0 - not installed
+     *             1 - installed
+     *
+     * @since 1.1.0
+     */
+    private static function is_module_installed__extended_validation()
+    {
+        // Run the path discovery function
+        $absPath = self::find_absolute_path_by_dir();
+        // Add the file name
+        $absPath .= "empty.me";
+
+        // Purge cache to create empty file
+        self::purge_cache(true, $absPath);
+
+        // wait for the file to be removed
+        sleep(1);
+
+        // return 0 if the file is still there and 1 if the file was removed
+        return file_exists($absPath) ? 0 : 1;
+    }
 
     /**
      * Function used to return a webpage header request.
      * Used by WSA::is_module_installed
-     * 
+     *
      * @param string $p_pageUrl Url to request
      * @return string Webpage header
-     * 
+     *
      * @since 1.0.0
      */
     private static function get_page_header($p_pageUrl)
@@ -242,16 +275,15 @@ class WSA
         return $output;
     }
 
-
     /**
-     * This function will return the domain name currently being browse 
+     * This function will return the domain name currently being browse
      * including the URL prefix.
      * Used by WSA::purge_cache & WSA::is_module_installed
-     * 
-     * @param bool     Whether to return the URL prefix being used (HTTP or 
+     *
+     * @param bool     Whether to return the URL prefix being used (HTTP or
      *                 HTTPS) in the URL
      * @return string  Return the site URL
-     * 
+     *
      * @since 1.0.0
      */
     private static function fetch_current_domain($p_getPrefix = true)
@@ -268,12 +300,11 @@ class WSA
             $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME']);
     }
 
-
     /**
      * Tries to find the absolute path base on the current working directory or
-     * by working up the folders. 
+     * by working up the folders.
      * Used by WSA::purge_cache
-     * 
+     *
      * @return string Return the empty if the path cannot be set
      */
     private static function find_absolute_path_by_dir()
@@ -283,8 +314,8 @@ class WSA
 
         /**
          * Split the current path into two groups to find the username. cPanel
-         * usually use the following pattern: /$WEBFILES/$USER Groups are 
-         * separated by / character and names can be any char, number or 
+         * usually use the following pattern: /$WEBFILES/$USER Groups are
+         * separated by / character and names can be any char, number or
          * underscore ([a-zA-Z0-9_]).
          */
         preg_match(
@@ -304,13 +335,13 @@ class WSA
         if (!file_exists($absPath)) {
 
             /**
-             * Remove the backslash at the beginning and end of the current 
+             * Remove the backslash at the beginning and end of the current
              * path.
              */
             $cleaneadPath = trim(__DIR__, "/");
 
             /**
-             * Start by counting the amount of sub directory in the current 
+             * Start by counting the amount of sub directory in the current
              * path to prevent moving up too far.
              */
             $subfolders = count(explode('/', $cleaneadPath));
@@ -350,13 +381,12 @@ class WSA
         return $absPath;
     }
 
-
     /**
      * Private function to try to find the module folder path by working up
      * recursively into the folders hierarchy.
-     * 
+     *
      * @param string  Current folder that the function is looking at.
-     * @param int     Maximum recursion allowed to prevent going to far or 
+     * @param int     Maximum recursion allowed to prevent going to far or
      *                infinite loop
      * @param bool    Will be set to true if the path if found since the sub
      *                can exit wihout finding the path.
@@ -372,7 +402,7 @@ class WSA
         if ($p_currentPass < $p_maxBatrace) {
 
             /**
-             * If the folder exists, trigger the found variable and exit 
+             * If the folder exists, trigger the found variable and exit
              * otherwise call itself.
              */
             if (file_exists($p_currentBacktracePath)) {
@@ -395,7 +425,6 @@ class WSA
             }
         }
     }
-
 
     /**
      * Delete purge cache if file already exists. To prevent error, we make
